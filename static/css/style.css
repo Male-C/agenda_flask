@@ -1,0 +1,19 @@
+body {
+    background-color: whitesmoke;
+}
+
+input {
+    display: block;
+}
+
+.msj {
+    border: 2px solid;
+    font-weight: bold;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.ok {
+    border-color: green;
+    background-color: lightgreen;
+}
