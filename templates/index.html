@@ -21,11 +21,30 @@
     <input type="text" name="ig" id="ig" placeholder="Instagram">
     <input type="submit" value="Crear contacto">
   </form>
-  <ul>
-    {% for c in colores %}
-    <li>{{ c }}</li>
-    {% endfor %}
-  </ul>
+
+  <h2>Busca tus contactos</h2>
+  <form action="/buscar" method="post">
+    <input type="text" name="nombre" id="nombre" placeholder="Nombre">
+    <input type="submit" value="Buscar contacto">
+  </form>
+  {% if borrado %}
+  <p class="msj ok">Contacto borrado con éxito.</p>
+  {% endif %}
+  {% if contactos %}
+  {% for c in contactos %}
+  <form action="/borrar" method="post">
+    <input type="text" name="nombre" id="nombre" placeholder="Nombre" value="{{c['nombre']}}">
+    <input type="email" name="mail" id="mail" placeholder="e-mail"  value="{{c['mail']}}">
+    <input type="number" name="telefono" id="telefono" placeholder="Teléfono"  value="{{c['telefono']}}">
+    <input type="text" name="ig" id="ig" placeholder="Instagram"  value="{{c['ig']}}" >
+    <input type="hidden" name="id" value="{{c['id']}}">
+    <input type="submit" value="Borrar contacto">
+  </form>
+  {% endfor %}
+  {% endif %}
+
+
+
 </body>
 
 </html>

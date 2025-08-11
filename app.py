@@ -25,6 +25,20 @@ def nuevo_contacto():
     return render_template("index.html", titulo="Hola desde Flask", colores=colores, nuevo=True)
 
 
+@app.route("/buscar", methods=['POST'])
+def consultar_contacto():
+    nom = request.form['nombre']
+    resultado = acceso_db.consulta_generica(f"SELECT * FROM datos WHERE nombre LIKE '%{nom}%'")
+    for contacto in resultado:
+        print(contacto)
+
+    return render_template("index.html", titulo="Hola desde Flask", contactos=resultado)
+
+@app.route("/borrar", methods=['POST'])
+def borrar_contacto():
+    acceso_db.borrar("datos", ("ID",request.form["id"]))
+    
+    return render_template("index.html", titulo="Hola desde Flask", borrado=True)
 
 
 if __name__ == "__main__":
