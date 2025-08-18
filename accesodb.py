@@ -91,6 +91,7 @@ class AccesoDB:
         if len(filtro) != 2:
             raise ValueError("El filtro debe tener dos elementos")
         query = f"DELETE FROM `{tabla}` WHERE (`{filtro[0]}` = '{filtro[1]}')"
+        print(query)
         return self.modificacion_generica(query)
         
         
@@ -132,6 +133,7 @@ class AccesoDB:
         Returns:
             int: cantidad de registros modificados
         """
+        
         pass
 
     def __del__(self) -> None:

@@ -17,3 +17,8 @@ input {
     border-color: green;
     background-color: lightgreen;
 }
+
+.error{
+    border-color: red;
+    background-color: salmon;
+}

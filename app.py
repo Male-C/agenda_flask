@@ -9,7 +9,7 @@ acceso_db = AccesoDB("127.0.0.1", "root", "", "agenda")
 
 @app.route("/")
 def home():
-    return render_template("index.html", titulo="Hola desde Flask", colores=colores)
+    return render_template("index.html")
 
 def guardar_datos(nombre, mail, telefono, ig):
     acceso_db.crear("datos", {"nombre":nombre, "mail":mail, "telefono":telefono, "ig":ig})
@@ -22,7 +22,7 @@ def nuevo_contacto():
     ig = request.form['ig']
     print(nom, mail, tel, ig)
     guardar_datos(nom, mail, tel, ig)
-    return render_template("index.html", titulo="Hola desde Flask", colores=colores, nuevo=True)
+    return render_template("index.html",nuevo=True)
 
 
 @app.route("/buscar", methods=['POST'])
@@ -32,14 +32,25 @@ def consultar_contacto():
     for contacto in resultado:
         print(contacto)
 
-    return render_template("index.html", titulo="Hola desde Flask", contactos=resultado)
+    return render_template("index.html",  contactos=resultado)
 
-@app.route("/borrar", methods=['POST'])
+@app.route("/editarborrar", methods=['POST'])
 def borrar_contacto():
-    acceso_db.borrar("datos", ("ID",request.form["id"]))
-    
-    return render_template("index.html", titulo="Hola desde Flask", borrado=True)
-
+    if request.form['action'] == 'Borrar':
+        acceso_db.borrar("datos", ("ID",request.form["id"]))
+        return render_template("index.html", borrado=True)
+    elif request.form['action'] == 'Editar':
+        query = "UPDATE datos SET "
+        query += f"nombre = '{request.form['nombre']}',"
+        query += f"telefono = '{request.form['telefono']}',"
+        query += f"mail = '{request.form['mail']}',"
+        query += f"ig = '{request.form['ig']}' "
+        query += f"WHERE (ID = '{request.form['id']}')"
+        print(query)
+        acceso_db.modificacion_generica(query)
+        return render_template("index.html", modificado=True)
+    else:
+        return render_template("index.html", error=True)
 
 if __name__ == "__main__":
     app.run()
