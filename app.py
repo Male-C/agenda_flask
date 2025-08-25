@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session, redirect
 from accesodb import AccesoDB
 
 app = Flask(__name__)
@@ -6,10 +6,35 @@ app = Flask(__name__)
 colores = ['azul', 'verde', 'rojo', 'rosa', 'violeta', 'blanco']
 
 acceso_db = AccesoDB("127.0.0.1", "root", "", "agenda")
+app.secret_key = 'supersecreta'
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    if 'user' in session:
+        return render_template("index.html", username=session['user'])
+    if 'saludo' not in session:
+        session['saludo'] = False
+    if 'error' not in session:
+        session['error'] = False
+    return render_template("login.html", error=session['error'], saludo=session['saludo'])
+
+
+@app.route("/login", methods = ['POST'])
+def login():
+    username = request.form['username']
+    password = request.form['password']
+    busqueda_user = acceso_db.consulta_generica(f"SELECT * FROM usuarios WHERE usuario = '{username}' AND `password` = '{password}'")
+    if busqueda_user:
+        session['user'] = username
+        return redirect("/")
+    session['error'] = True
+    return redirect("/")
+
+@app.route("/logout", methods = ['POST'])
+def logout():
+    session.clear()
+    session['saludo'] = True
+    return redirect("/")
 
 def guardar_datos(nombre, mail, telefono, ig):
     acceso_db.crear("datos", {"nombre":nombre, "mail":mail, "telefono":telefono, "ig":ig})

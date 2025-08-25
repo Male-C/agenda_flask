@@ -5,10 +5,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-  <title>Hola desde Flask</title>
 </head>
 
 <body>
+  <h1>Bienvenido {{ username }}</h1>
+
   <h1>{{ titulo }}</h1>
   <h2>Nuevo contacto</h2>
   {% if nuevo %}
@@ -48,8 +49,9 @@
   {% endfor %}
   {% endif %}
 
-
-
+  <form action="/logout" method="post">
+    <input type="submit" value="Cerrar Sesión">
+  </form>
 </body>
 
 </html>
