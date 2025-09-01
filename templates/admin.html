@@ -1,34 +1,31 @@
 <!DOCTYPE html>
-<html lang="es">
-
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
 </head>
-
 <body>
-  <h1>Bienvenido {{ username }}</h1>
+    <h1>Bienvenido ADMINISTRADOR</h1>
 
-  <h1>{{ titulo }}</h1>
+  <h1>ESTOS SON LOS USUARIOS</h1>
 
-
-  <h2>Nuevo contacto</h2>
+  <h2>Nuevo usuario</h2>
   {% if nuevo %}
-  <p class="msj ok">Usuario creado con éxito.</p>
+    <p class="msj ok">Usuario creado con éxito.</p>
   {% endif %}
-  <form action="/nuevo" method="post">
+  <form action="/nuevo_usuario" method="post">
     <input type="text" name="nombre" id="nombre" placeholder="Nombre" required>
-    <input type="email" name="mail" id="mail" placeholder="e-mail" required>
-    <input type="number" name="telefono" id="telefono" placeholder="Teléfono" required>
-    <input type="text" name="ig" id="ig" placeholder="Instagram" required>
-    <input type="submit" value="Crear contacto">
+    <input type="text" name="contrasena" id="contrasena" placeholder="Contraseña" required>
+    <input type="number" name="user_id" id="user_id" placeholder="ID del usuario" required>
+    <input type="submit" value="Crear usuario">
   </form>
 
-  <h2>Busca tus contactos</h2>
-  <form action="/buscar" method="post">
-    <input type="text" name="nombre" id="nombre" placeholder="Nombre">
-    <input type="submit" value="Buscar contacto">
+  <h2>Busca usuarios</h2>
+  <form action="/buscar_usuarios" method="post">
+    <input type="text" name="usuario" id="usuario" placeholder="usuario">
+    <input type="submit" value="Buscar usuario">
   </form>
   {% if borrado %}
   <p class="msj ok">Contacto borrado con éxito.</p>
@@ -39,7 +36,7 @@
   {% endif %}
   {% if contactos %}
   {% for c in contactos %}
-  <form action="/editarborrar" method="post">
+  <form action="/editarborrar_usuario" method="post">
     <input type="text" name="nombre" id="nombre" placeholder="Nombre" value="{{c['nombre']}}">
     <input type="email" name="mail" id="mail" placeholder="e-mail"  value="{{c['mail']}}">
     <input type="number" name="telefono" id="telefono" placeholder="Teléfono"  value="{{c['telefono']}}">
@@ -51,9 +48,6 @@
   {% endfor %}
   {% endif %}
 
-  <form action="/logout" method="post">
-    <input type="submit" value="Cerrar Sesión">
-  </form>
-</body>
 
+</body>
 </html>
