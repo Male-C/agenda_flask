@@ -30,6 +30,7 @@
     <input type="text" name="nombre" id="nombre" placeholder="Nombre">
     <input type="submit" value="Buscar contacto">
   </form>
+
   {% if borrado %}
   <p class="msj ok">Contacto borrado con éxito.</p>
   {% elif modificado %}
@@ -50,6 +51,7 @@
   </form>
   {% endfor %}
   {% endif %}
+
 
   <form action="/logout" method="post">
     <input type="submit" value="Cerrar Sesión">

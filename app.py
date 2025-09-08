@@ -3,8 +3,6 @@ from accesodb import AccesoDB
 
 app = Flask(__name__)
 
-colores = ['azul', 'verde', 'rojo', 'rosa', 'violeta', 'blanco']
-
 acceso_db = AccesoDB("127.0.0.1", "root", "", "agenda")
 app.secret_key = 'supersecreta'
 
@@ -22,8 +20,8 @@ def home():
 @app.route("/login", methods = ['POST'])
 def login():
     username = request.form['username']
-    password = request.form['password']
-    busqueda_user = acceso_db.consulta_generica(f"SELECT * FROM usuarios WHERE usuario = '{username}' AND `password` = '{password}'")
+    contrasenia = request.form['contrasenia']
+    busqueda_user = acceso_db.consulta_generica(f"SELECT * FROM usuarios WHERE usuario = '{username}' AND `contrasenia` = '{contrasenia}'")
     if busqueda_user:
         session['user'] = username
         session['user_id'] = busqueda_user[0]['ID']
@@ -42,6 +40,9 @@ def logout():
 def guardar_datos(nombre, mail, telefono, ig, user_id):
     acceso_db.crear("datos", {"nombre":nombre, "mail":mail, "telefono":telefono, "ig":ig, "user_id":user_id})
 
+def guardar_contactos(usuario, contrasenia):
+    acceso_db.crear("usuarios", {"usuario":usuario, "contrasenia":contrasenia})
+
 @app.route("/nuevo", methods=['POST'])
 def nuevo_contacto():
     nom = request.form['nombre']
@@ -55,11 +56,10 @@ def nuevo_contacto():
 
 @app.route("/nuevo_usuario", methods=['POST'])
 def nuevo_usuario():
-    nom = request.form['nombre']
-    contrasena = request.form['contrasena']
-    user_id = int
-    print(nom, contrasena, user_id)
-    guardar_datos(nom, contrasena, user_id)
+    nom = request.form['usuario']
+    contrasenia = request.form['contrasenia']
+    print(nom, contrasenia)
+    guardar_contactos(nom, contrasenia)
     return render_template("admin.html",nuevo_usuario=True)
 
 @app.route("/buscar", methods=['POST'])
@@ -70,12 +70,16 @@ def consultar_contacto():
         print(contacto)
     return render_template("index.html",  contactos=resultado)
 
-@app.route("/buscar_usuario", methods=['POST'])
+@app.route("/buscar_usuarios", methods=['POST'])
 def consultar_usuario():
     nom = request.form['usuario']
+    print("Nombre recibido:", nom)
     resultado = acceso_db.consulta_generica(f"SELECT * FROM usuarios WHERE usuario LIKE '%{nom}%'")
+    print("SQL ejecutada:", resultado)
+    print("Resultado:", resultado)
+
     for usuario in resultado:
-        print(usuario)
+        print("rter",usuario)
     return render_template("admin.html",  usuarios=resultado)
 
 @app.route("/editarborrar", methods=['POST'])
@@ -84,7 +88,7 @@ def borrar_contacto():
         acceso_db.borrar("datos", ("ID",request.form["id"]))
         return render_template("index.html", borrado=True)
     elif request.form['action'] == 'Editar':
-        query = "UPDATE datos SET "
+        query = "UPDATE datos SET"
         query += f"nombre = '{request.form['nombre']}',"
         query += f"telefono = '{request.form['telefono']}',"
         query += f"mail = '{request.form['mail']}',"

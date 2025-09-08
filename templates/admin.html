@@ -16,38 +16,32 @@
     <p class="msj ok">Usuario creado con éxito.</p>
   {% endif %}
   <form action="/nuevo_usuario" method="post">
-    <input type="text" name="nombre" id="nombre" placeholder="Nombre" required>
-    <input type="text" name="contrasena" id="contrasena" placeholder="Contraseña" required>
-    <input type="number" name="user_id" id="user_id" placeholder="ID del usuario" required>
+    <input type="text" name="usuario" id="usuario" placeholder="Nombre" required>
+    <input type="text" name="contrasenia" id="contrasenia" placeholder="Contraseña" required>
     <input type="submit" value="Crear usuario">
   </form>
+
 
   <h2>Busca usuarios</h2>
   <form action="/buscar_usuarios" method="post">
     <input type="text" name="usuario" id="usuario" placeholder="usuario">
     <input type="submit" value="Buscar usuario">
   </form>
-  {% if borrado %}
-  <p class="msj ok">Contacto borrado con éxito.</p>
-  {% elif modificado %}
-  <p class="msj ok">Contacto modificado con éxito.</p>
-  {% elif error %}
-  <p class="msj error">ERROR.</p>
-  {% endif %}
-  {% if contactos %}
-  {% for c in contactos %}
-  <form action="/editarborrar_usuario" method="post">
-    <input type="text" name="nombre" id="nombre" placeholder="Nombre" value="{{c['nombre']}}">
-    <input type="email" name="mail" id="mail" placeholder="e-mail"  value="{{c['mail']}}">
-    <input type="number" name="telefono" id="telefono" placeholder="Teléfono"  value="{{c['telefono']}}">
-    <input type="text" name="ig" id="ig" placeholder="Instagram"  value="{{c['ig']}}" >
-    <input type="hidden" name="id" value="{{c['ID']}}">
-    <input type="submit" name="action" value="Editar">
-    <input type="submit" name="action" value="Borrar">
+
+  
+  <h2>Usuarios encontrados:</h2>
+{% if usuarios %}
+    {% for usuario in usuarios %}
+        {{ usuario.usuario }}
+    {% endfor %}
+{% else %}
+    <p>No se encontraron usuarios.</p>
+{% endif %}
+
+
+  <form action="/logout" method="post">
+    <input type="submit" value="Cerrar Sesión">
   </form>
-  {% endfor %}
-  {% endif %}
-
-
+  
 </body>
 </html>
