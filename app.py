@@ -9,7 +9,10 @@ app.secret_key = 'supersecreta'
 @app.route("/")
 def home():
     if 'user' in session:
-        return render_template("index.html", username=session['user'])
+        if session['user'] == "admin":
+            return render_template("admin.html", username="admin")
+        else:
+            return render_template("index.html", username=session['user'])
     if 'saludo' not in session:
         session['saludo'] = False
     if 'error' not in session:
@@ -25,9 +28,8 @@ def login():
     if busqueda_user:
         session['user'] = username
         session['user_id'] = busqueda_user[0]['ID']
-        if username == "admin":
-            return render_template("admin.html")    
-        return redirect("/")
+        if session['user'] == "admin":
+            return render_template("admin.html")
     session['error'] = True
     return redirect("/")
 
@@ -74,7 +76,7 @@ def consultar_contacto():
 def consultar_usuario():
     nom = request.form['usuario']
     print("Nombre recibido:", nom)
-    resultado = acceso_db.consulta_generica(f"SELECT * FROM usuarios WHERE usuario LIKE '%{nom}%'")
+    resultado = acceso_db.consulta_generica(f"SELECT * FROM usuarios WHERE usuario LIKE '%{nom}%' AND ID != 0")
     print("SQL ejecutada:", resultado)
     print("Resultado:", resultado)
 
@@ -88,7 +90,7 @@ def borrar_contacto():
         acceso_db.borrar("datos", ("ID",request.form["id"]))
         return render_template("index.html", borrado=True)
     elif request.form['action'] == 'Editar':
-        query = "UPDATE datos SET"
+        query = "UPDATE datos SET "
         query += f"nombre = '{request.form['nombre']}',"
         query += f"telefono = '{request.form['telefono']}',"
         query += f"mail = '{request.form['mail']}',"
@@ -100,7 +102,27 @@ def borrar_contacto():
     else:
         return render_template("index.html", error=True)
     
-    
+
+@app.route("/editarborrar_usuarios", methods=['POST'])
+def borrar_usuario():
+    user_id = int(request.form['id'])
+
+    if user_id == 0:
+        return render_template("admin.html", error="No se puede modificar ni borrar el admin")
+
+    if request.form['action'] == 'Borrar':
+        acceso_db.borrar("usuarios", ("ID", user_id))
+        return render_template("admin.html", borrado=True)
+
+    elif request.form['action'] == 'Editar':
+        query = "UPDATE usuarios SET "
+        query += f"usuario = '{request.form['usuario']}', "
+        query += f"contrasenia = '{request.form['contrasenia']}' "
+        query += f"WHERE ID = '{user_id}'"
+        print("Query:", query)
+        acceso_db.modificacion_generica(query)
+        return render_template("admin.html", modificado=True)
+
 
 if __name__ == "__main__":
     app.run()

@@ -21,22 +21,37 @@
     <input type="submit" value="Crear usuario">
   </form>
 
-
   <h2>Busca usuarios</h2>
   <form action="/buscar_usuarios" method="post">
     <input type="text" name="usuario" id="usuario" placeholder="usuario">
     <input type="submit" value="Buscar usuario">
   </form>
-
   
   <h2>Usuarios encontrados:</h2>
+
+  {% if borrado %}
+  <p class="msj ok">Contacto borrado con éxito.</p>
+  {% elif modificado %}
+  <p class="msj ok">Contacto modificado con éxito.</p>
+  {% elif error %}
+  <p class="msj error">ERROR.</p>
+  {% endif %}
+
 {% if usuarios %}
     {% for usuario in usuarios %}
-        {{ usuario.usuario }}
+      <form action="/editarborrar_usuarios" method="post">
+        <input type="text" name="usuario" id="usuario" placeholder="Usuario" value="{{usuario['usuario']}}">
+        <input type="text" name="contrasenia" id="contrasenia" placeholder="contrasenia"  value="{{usuario['contrasenia']}}">
+        <input type="hidden" name="id" id="id" value="{{usuario['ID']}}">
+        <input type="submit" name="action" value="Editar">
+        <input type="submit" name="action" value="Borrar">
+     </form>
     {% endfor %}
-{% else %}
-    <p>No se encontraron usuarios.</p>
-{% endif %}
+  {% endif %}
+
+    
+
+
 
 
   <form action="/logout" method="post">
